@@ -1,0 +1,21 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}Profile - Gaurav Kumar{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Profile</h2>
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

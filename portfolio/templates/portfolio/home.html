@@ -1,0 +1,198 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}Home - Gaurav Kumar{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        height: 100vh;
+        background-color: #000;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-family: 'Crimson Text', serif;
+        font-size: 56px;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .hero-subtitle {
+        font-family: 'Karla', sans-serif;
+        font-size: 28px;
+        font-weight: 400;
+        color: #86868b;
+        margin-bottom: 1rem;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.8s ease forwards 0.2s;
+    }
+
+    .hero-cta {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.8s ease forwards 0.4s;
+    }
+
+    .hero-cta .btn {
+        font-family: 'Karla', sans-serif;
+        padding: 12px 24px;
+        font-size: 18px;
+        border-radius: 980px;
+        margin: 0 8px;
+    }
+
+    /* Featured Sections */
+    .featured-section {
+        padding: 80px 0;
+        text-align: center;
+        background-color: #fbfbfd;
+    }
+
+    .featured-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .featured-item {
+        position: relative;
+        border-radius: 18px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .featured-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .featured-content {
+        padding: 2rem;
+    }
+
+    .featured-title {
+        font-family: 'Crimson Text', serif;
+        font-size: 24px;
+        margin-bottom: 1rem;
+    }
+
+    .featured-description {
+        font-family: 'Merriweather', serif;
+        font-size: 16px;
+        color: #86868b;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .scroll-indicator {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">{{ about.name|default:"Gaurav Kumar" }}</h1>
+        <h2 class="hero-subtitle">{{ about.tagline|default:"Software Engineer & Tech Enthusiast" }}</h2>
+        <div class="hero-cta">
+            <a href="{% url 'portfolio:about' %}" class="btn btn-outline-light">Learn More</a>
+            <a href="{% url 'portfolio:life_events' %}" class="btn btn-primary">View Journey</a>
+        </div>
+    </div>
+    <div class="scroll-indicator">
+        <i class="fas fa-chevron-down text-white"></i>
+    </div>
+</section>
+
+<!-- Featured Sections -->
+<section class="featured-section">
+    <div class="featured-grid">
+        <div class="featured-item">
+            <div class="featured-content">
+                <h3 class="featured-title">Latest Books</h3>
+                <p class="featured-description">Explore my current reading list and book recommendations.</p>
+                <a href="{% url 'portfolio:books' %}" class="btn btn-outline-primary">View Books</a>
+            </div>
+        </div>
+        <div class="featured-item">
+            <div class="featured-content">
+                <h3 class="featured-title">Shows & Movies</h3>
+                <p class="featured-description">Check out what I'm watching and my favorite picks.</p>
+                <a href="{% url 'portfolio:shows' %}" class="btn btn-outline-primary">View Shows</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Life Events Timeline -->
+<section class="featured-section bg-white">
+    <div class="container">
+        <h2 class="text-center mb-5" style="font-family: 'Crimson Text', serif;">Recent Life Events</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                {% for event in recent_events|slice:":3" %}
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ event.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ event.date|date:"F j, Y" }}</h6>
+                        <p class="card-text">{{ event.description|truncatewords:30 }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="text-center mt-4">
+                    <a href="{% url 'portfolio:life_events' %}" class="btn btn-outline-primary">View All Events</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 

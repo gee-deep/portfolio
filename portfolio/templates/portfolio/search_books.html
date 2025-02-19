@@ -1,0 +1,69 @@
+{% extends 'portfolio/search_base.html' %}
+
+{% block search_title %}Books{% endblock %}
+{% block search_placeholder %}Search for books...{% endblock %}
+
+{% block card_template %}
+<div class="media-card">
+    <img class="media-poster" src="" alt="">
+    <div class="media-info">
+        <h3 class="media-title"></h3>
+        <p class="media-subtitle"></p>
+        <div class="media-meta">
+            <span class="year"></span>
+            <span class="rating"></span>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="add-buttons">
+            <form method="post" action="">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="want_to_read">
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-bookmark"></i> Want to Read
+                </button>
+            </form>
+            <form method="post" action="">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="reading">
+                <button type="submit" class="btn btn-sm btn-success">
+                    <i class="fas fa-book-reader"></i> Reading
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block search_specific_js %}
+<script>
+new MediaSearch({
+    searchUrl: '{% url "portfolio:search_books" %}',
+    addUrl: '{% url "portfolio:books" %}add/',
+    type: 'book',
+    formatResult: (card, book) => {
+        // Set book poster
+        const poster = card.querySelector('.media-poster');
+        poster.src = book.image_url || '/static/images/book-placeholder.jpg';
+        poster.alt = book.title;
+        
+        // Set book info
+        card.querySelector('.media-title').textContent = book.title;
+        card.querySelector('.media-subtitle').textContent = book.authors.join(', ');
+        
+        // Set meta info
+        const year = book.published_date ? book.published_date.split('-')[0] : 'N/A';
+        card.querySelector('.year').textContent = year;
+        
+        if (book.rating) {
+            card.querySelector('.rating').textContent = `★ ${book.rating}`;
+        }
+        
+        // Set form actions
+        card.querySelectorAll('form').forEach(form => {
+            form.action = `{% url 'portfolio:add_book' 'BOOK_ID' %}`.replace('BOOK_ID', book.id);
+        });
+    }
+});
+</script>
+{% endblock %} 

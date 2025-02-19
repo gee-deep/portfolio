@@ -1,0 +1,372 @@
+{% load static %}
+
+<div class="show-item">
+    <div class="show-card" data-bs-toggle="modal" data-bs-target="#showModal{{ show.id }}">
+        <img src="{{ show.image_url }}" alt="{{ show.title }}" class="show-poster">
+        <div class="show-info">
+            <h3 class="show-title">{{ show.title }}</h3>
+            <div class="show-meta">
+                <span>{{ show.release_date|date:"Y" }}</span>
+                {% if show.rating %}
+                    <span class="ms-2">★ {{ show.rating }}</span>
+                {% endif %}
+                {% if show.runtime %}
+                    <span class="ms-2">{{ show.runtime }} min</span>
+                {% endif %}
+            </div>
+            <div class="show-meta">
+                {% if show.genres %}
+                    <span>{{ show.genres }}</span>
+                {% endif %}
+            </div>
+            <p class="show-overview">{{ show.overview|truncatechars:150 }}</p>
+            <div class="show-actions">
+                <div class="action-buttons">
+                    {% if user.is_authenticated %}
+                        {% if show.status == 'want_to_watch' %}
+                            <form method="post" action="{% url 'portfolio:update_show_status' show.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="new_status" value="watching">
+                                <button type="submit" class="btn btn-sm btn-success btn-icon">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            </form>
+                        {% elif show.status == 'watching' %}
+                            <form method="post" action="{% url 'portfolio:update_show_status' show.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="new_status" value="watched">
+                                <button type="submit" class="btn btn-sm btn-info btn-icon">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </form>
+                        {% elif show.status == 'watched' %}
+                            <form method="post" action="{% url 'portfolio:delete_show' show.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger btn-icon" 
+                                        onclick="return confirm('Are you sure you want to delete this show?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                    <a href="{% url 'portfolio:life_events' %}?date={{ show.date_added|date:'Y-m-d' }}" 
+                       class="btn btn-sm btn-outline-light btn-icon"
+                       title="View life events from this date">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                </div>
+                {% if user.is_authenticated %}
+                <div class="vote-controls">
+                    <button class="btn btn-sm btn-outline-light vote-btn" 
+                            onclick="voteShow({{ show.id }}, 1)"
+                            title="Vote Up">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span class="vote-count">{{ show.votes }}</span>
+                    </button>
+                    <button class="btn btn-sm btn-outline-light vote-btn" 
+                            onclick="voteShow({{ show.id }}, -1)"
+                            title="Vote Down">
+                        <i class="fas fa-thumbs-down"></i>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Show Detail Modal -->
+<div class="modal fade" id="showModal{{ show.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="{{ show.image_url }}" 
+                             alt="{{ show.title }}" 
+                             class="show-detail-image">
+                    </div>
+                    <div class="col-md-8">
+                        <h2 class="show-detail-title">{{ show.title }}</h2>
+                        <div class="show-detail-meta">
+                            <span class="year">{{ show.release_date|date:"Y" }}</span>
+                            {% if show.rating %}
+                                <span class="rating ms-3">★ {{ show.rating }}</span>
+                            {% endif %}
+                            {% if show.runtime %}
+                                <span class="duration ms-3">{{ show.runtime }} min</span>
+                            {% endif %}
+                            {% if show.show_type %}
+                                <span class="type ms-3">{{ show.show_type|title }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if show.genres %}
+                        <div class="show-detail-genres">
+                            <h5>Genres</h5>
+                            <p>{{ show.genres }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if show.cast %}
+                        <div class="show-detail-cast">
+                            <h5>Cast</h5>
+                            <p>{{ show.cast }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if show.director %}
+                        <div class="show-detail-director">
+                            <h5>{% if show.show_type == 'movie' %}Director{% else %}Created By{% endif %}</h5>
+                            <p>{{ show.director }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if show.show_type == 'tv' %}
+                        <div class="show-detail-seasons">
+                            <h5>Seasons</h5>
+                            <p>{{ show.season_count }} season{{ show.season_count|pluralize }} 
+                               ({{ show.episode_count }} episode{{ show.episode_count|pluralize }})</p>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="show-detail-overview">
+                            <h5>Overview</h5>
+                            <div class="overview-text">
+                                {{ show.overview }}
+                            </div>
+                        </div>
+                        
+                        <div class="show-detail-actions mt-4">
+                            {% if user.is_authenticated %}
+                                {% if show.status == 'want_to_watch' %}
+                                    <form method="post" action="{% url 'portfolio:update_show_status' show.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="new_status" value="watching">
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-play"></i> Start Watching
+                                        </button>
+                                    </form>
+                                {% elif show.status == 'watching' %}
+                                    <form method="post" action="{% url 'portfolio:update_show_status' show.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="new_status" value="watched">
+                                        <button type="submit" class="btn btn-info">
+                                            <i class="fas fa-check"></i> Mark as Watched
+                                        </button>
+                                    </form>
+                                {% endif %}
+                                <div class="vote-controls d-inline-block ms-3">
+                                    <button class="btn btn-outline-light" 
+                                            onclick="voteShow({{ show.id }}, 1)"
+                                            title="Vote Up">
+                                        <i class="fas fa-thumbs-up"></i>
+                                        <span class="vote-count">{{ show.votes }}</span>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.show-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.vote-controls {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.vote-btn {
+    padding: 0.25rem 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.vote-count {
+    font-size: 0.8rem;
+}
+
+.show-info {
+    background: linear-gradient(to top, 
+        rgba(0,0,0,0.95) 0%,
+        rgba(0,0,0,0.8) 60%,
+        transparent 100%);
+}
+
+.show-title {
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.show-meta {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.show-overview {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    color: var(--text-white);
+}
+
+.show-detail-image {
+    width: 100%;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.show-detail-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-white);
+}
+
+.show-detail-meta {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.show-detail-genres h5,
+.show-detail-cast h5,
+.show-detail-director h5,
+.show-detail-seasons h5,
+.show-detail-overview h5 {
+    color: var(--text-white);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.show-detail-genres p,
+.show-detail-cast p,
+.show-detail-director p,
+.show-detail-seasons p {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+}
+
+.overview-text {
+    color: var(--text-light);
+    line-height: 1.6;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.overview-text::-webkit-scrollbar {
+    width: 6px;
+}
+
+.overview-text::-webkit-scrollbar-track {
+    background: var(--netflix-dark-gray);
+}
+
+.overview-text::-webkit-scrollbar-thumb {
+    background: var(--netflix-red);
+    border-radius: 3px;
+}
+
+.modal-header {
+    padding: 1rem 1rem 0;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.show-detail-actions .btn {
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+}
+
+.vote-controls .btn {
+    padding: 0.5rem 1.5rem;
+}
+
+.vote-count {
+    margin-left: 0.5rem;
+}
+
+.show-card:hover .show-poster {
+    transform: scale(1.02);
+}
+
+.show-card:hover .show-info {
+    transform: translateY(0);
+}
+
+.shows-track:hover .show-item {
+    transform: translateX(-2%);
+}
+
+.show-item:hover ~ .show-item {
+    transform: translateX(2%);
+}
+
+.show-item:hover {
+    transform: scale(1.1) !important;
+    z-index: 1;
+}
+
+.show-poster,
+.show-info,
+.show-item {
+    transition: all 0.2s ease-out;
+}
+</style>
+
+<script>
+function voteShow(showId, direction) {
+    const url = direction > 0 
+        ? `/portfolio/shows/vote/${showId}/`
+        : `/portfolio/shows/downvote/${showId}/`;
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const voteCount = document.querySelector(`[data-show-id="${showId}"] .vote-count`);
+        if (voteCount) {
+            voteCount.textContent = data.votes;
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script> 

@@ -1,0 +1,527 @@
+:root {
+    /* Color Palette */
+    --primary-dark: #1B3A38;    /* Deep forest green */
+    --primary-light: #E8E4D7;   /* Cream parchment */
+    --accent-gold: #B8A87F;     /* Antique gold */
+    --accent-brown: #4A3F35;    /* Rich mahogany */
+    --text-dark: #2C2420;       /* Deep coffee */
+    --text-light: #F5F2E9;      /* Ivory */
+    --border-color: #D3CDBF;    /* Warm gray */
+}
+
+/* Layout styles */
+body {
+    background-color: var(--primary-light);
+    color: var(--text-dark);
+}
+
+.navbar {
+    background-color: var(--primary-dark) !important;
+    border-bottom: 2px solid var(--accent-gold);
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--text-light);
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: 1px;
+}
+
+.navbar-brand {
+    color: var(--accent-gold) !important;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    letter-spacing: 1.5px;
+}
+
+.sidebar-left, .sidebar-right {
+    min-height: calc(100vh - 56px);
+    padding: 20px;
+    background-color: var(--primary-light);
+    border-right: 1px solid var(--border-color);
+    border-left: 1px solid var(--border-color);
+}
+
+.main-content {
+    background-color: #fff;
+    min-height: calc(100vh - 56px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+/* Card styling */
+.card {
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-title {
+    color: var(--primary-dark);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: var(--text-light);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-brown);
+    border-color: var(--accent-brown);
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-dark) !important;
+    border-top: 2px solid var(--accent-gold);
+    color: var(--text-light);
+}
+
+/* Add elegant typography */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--primary-dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar-left, .sidebar-right {
+        display: none;
+    }
+    
+    .main-content {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        padding: 1rem;
+    }
+
+    .container-fluid {
+        padding: 0;
+    }
+
+    /* Adjust Netflix container margins for mobile */
+    .netflix-container {
+        margin: 0;
+        padding: 1rem;
+    }
+}
+
+/* Netflix container adjustment with new theme */
+.netflix-container {
+    background-color: var(--primary-dark);
+    color: var(--text-light);
+    max-width: 100%;
+    margin: -1.5rem;
+    border: 1px solid var(--accent-gold);
+}
+
+/* Auth styles */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+}
+
+.auth-box {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 400px;
+}
+
+.btn-outline-gold {
+    color: var(--accent-gold);
+    border: 1px solid var(--accent-gold);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+    background-color: var(--accent-gold);
+    color: var(--primary-dark);
+}
+
+/* Life Event Preview Styles */
+.preview-container {
+    background: var(--primary-light);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.modal-content {
+    background-color: var(--primary-light);
+    border: 1px solid var(--accent-gold);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--accent-gold);
+}
+
+.modal-title {
+    color: var(--primary-dark);
+    font-family: 'Cormorant Garamond', serif;
+}
+
+#previewTitle {
+    color: var(--primary-dark);
+    font-family: 'Cormorant Garamond', serif;
+    margin-bottom: 0.5rem;
+}
+
+#previewDate {
+    color: var(--accent-brown);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+}
+
+#previewDescription {
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* Life Events styles */
+.life-event-card {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease-in-out;
+}
+
+.life-event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.life-event-card .card-title {
+    color: var(--primary-dark);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.life-event-card .card-subtitle {
+    font-style: italic;
+    color: var(--accent-brown) !important;
+}
+
+.life-event-card .markdown-content {
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+.life-event-card .markdown-content h1,
+.life-event-card .markdown-content h2,
+.life-event-card .markdown-content h3,
+.life-event-card .markdown-content h4,
+.life-event-card .markdown-content h5,
+.life-event-card .markdown-content h6 {
+    color: var(--primary-dark);
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.life-event-card .markdown-content p {
+    margin-bottom: 1rem;
+}
+
+.life-event-card .markdown-content ul,
+.life-event-card .markdown-content ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.life-event-card .markdown-content blockquote {
+    border-left: 4px solid var(--accent-gold);
+    padding-left: 1rem;
+    margin-left: 0;
+    color: var(--accent-brown);
+    font-style: italic;
+}
+
+.life-event-card .markdown-content code {
+    background-color: var(--primary-light);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.life-event-card .markdown-content pre {
+    background-color: var(--primary-light);
+    padding: 1rem;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+
+/* Life Event Actions */
+.event-actions {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.life-event-card {
+    position: relative;
+}
+
+.life-event-card:hover .event-actions {
+    opacity: 1;
+}
+
+.event-actions .btn {
+    backdrop-filter: blur(4px);
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.event-actions .btn-outline-primary {
+    border-color: var(--primary-dark);
+    color: var(--primary-dark);
+}
+
+.event-actions .btn-outline-primary:hover {
+    background-color: var(--primary-dark);
+    color: var(--text-light);
+}
+
+.event-actions .btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.event-actions .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Pagination styles */
+.pagination-container {
+    margin-top: 2rem;
+}
+
+.pagination .page-link {
+    color: var(--primary-dark);
+    border-color: var(--border-color);
+    background-color: var(--text-light);
+    padding: 0.5rem 1rem;
+    margin: 0 0.2rem;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    color: var(--text-light);
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: var(--text-light);
+}
+
+.pagination .page-item.disabled .page-link {
+    color: var(--border-color);
+    pointer-events: none;
+    background-color: var(--text-light);
+    border-color: var(--border-color);
+}
+
+/* Add fade effect for page transitions */
+.life-events {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Date Filter styles */
+.date-filter-form {
+    background-color: var(--text-light);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.date-filter-form .form-label {
+    color: var(--primary-dark);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+}
+
+.date-filter-form .form-control {
+    border-color: var(--border-color);
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+}
+
+.date-filter-form .form-control:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 0.2rem rgba(184, 168, 127, 0.25);
+}
+
+/* Preserve filter when paginating */
+.pagination .page-link {
+    position: relative;
+    display: block;
+    text-decoration: none;
+}
+
+.pagination .page-item .page-link {
+    background-color: var(--text-light);
+    border-color: var(--border-color);
+}
+
+/* Show sections styles */
+.section-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--primary-dark);
+    border-bottom: 2px solid var(--accent-gold);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.show-poster {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+}
+
+.show-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.show-card:hover .show-poster img {
+    transform: scale(1.05);
+}
+
+.no-poster {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-dark);
+    color: var(--text-light);
+}
+
+.no-poster i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+.show-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.show-card:hover .show-backdrop {
+    opacity: 0.2;
+}
+
+.show-card {
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease-in-out;
+    background: var(--text-light);
+    overflow: hidden;
+}
+
+.show-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.show-card .card-img-top {
+    height: 300px;
+    object-fit: cover;
+}
+
+.show-card .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--primary-dark);
+    margin-bottom: 0.5rem;
+}
+
+.show-card .badge {
+    margin-right: 0.5rem;
+}
+
+.vote-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.show-filter-form {
+    background-color: var(--text-light);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.show-filter-form .form-label {
+    color: var(--primary-dark);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+}
+
+.show-filter-form .form-select {
+    border-color: var(--border-color);
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+}
+
+.show-filter-form .form-select:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 0.2rem rgba(184, 168, 127, 0.25);
+}
+
+/* Search Modal Styles */
+#searchModal .modal-dialog {
+    max-width: 800px;
+}
+
+#searchModal .no-poster {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-dark);
+    color: var(--text-light);
+}
+
+#searchModal .card {
+    transition: transform 0.2s ease;
+}
+
+#searchModal .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}

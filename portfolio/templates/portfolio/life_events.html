@@ -1,0 +1,307 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}My Life - Gaurav Kumar{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+    /* Option 3: Sophisticated and Literary */
+    .card-title {
+        font-family: 'Crimson Text', serif;
+        font-weight: 600;
+        font-size: 2rem;
+        color: var(--primary-dark);
+        margin-bottom: 0.5rem;
+        letter-spacing: 0;
+    }
+
+    .card-subtitle {
+        font-family: 'Karla', sans-serif;
+        font-weight: 500;
+        font-size: 1.1rem;
+        color: var(--accent-gold);
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .card-text, .markdown-content {
+        font-family: 'Merriweather', serif;
+        font-size: 1rem;
+        line-height: 1.7;
+        color: var(--text-dark);
+        font-weight: 300;
+        display: -webkit-box;
+        -webkit-line-clamp: 8;  /* Show approximately 8 lines of text */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Section Headers */
+    h1 {
+        font-family: 'Crimson Text', serif;
+        font-weight: 700;
+        font-size: 2.5rem;
+        color: var(--primary-dark);
+        margin-bottom: 2rem;
+        letter-spacing: 0;
+    }
+
+    /* Card Styling */
+    .card {
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, max-height 0.3s ease;
+        background-color: #fcfcfc;
+        max-height: 400px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .card.expanded {
+        max-height: 2000px;  /* Large enough to show full content */
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .card-body {
+        padding: 2rem;
+        position: relative;
+        max-height: 100%;
+        overflow: hidden;
+    }
+
+    /* Gradient fade for text overflow */
+    .card-body::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: linear-gradient(transparent, #fcfcfc);
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .card.expanded .card-body::after {
+        opacity: 0;
+    }
+
+    /* Expand/Collapse indicator */
+    .card::before {
+        content: '↓ Read more';
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Karla', sans-serif;
+        font-size: 0.9rem;
+        color: var(--primary-dark);
+        z-index: 2;
+        transition: opacity 0.3s ease;
+    }
+
+    .card.expanded::before {
+        content: '↑ Show less';
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Life Events</h1>
+        {% if user.is_authenticated %}
+            <div class="d-flex gap-3">
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#dateFilterCollapse">
+                    <i class="fas fa-filter"></i> Filter by Date
+                </button>
+                <a href="{% url 'portfolio:add_life_event' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Event
+                </a>
+            </div>
+        {% endif %}
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="collapse mb-4" id="dateFilterCollapse">
+        <div class="card card-body">
+            <form method="get" class="date-filter-form">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">From Date</label>
+                        <input type="date" name="start_date" class="form-control" 
+                               value="{{ request.GET.start_date|default:'' }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">To Date</label>
+                        <input type="date" name="end_date" class="form-control" 
+                               value="{{ request.GET.end_date|default:'' }}">
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary">Apply Filter</button>
+                        {% if request.GET.start_date or request.GET.end_date %}
+                            <a href="{% url 'portfolio:life_events' %}" class="btn btn-outline-secondary">
+                                Clear Filter
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% for event in events %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ event.title }}</h2>
+                        <h6 class="card-subtitle">{{ event.date|date:"F j, Y" }}</h6>
+                        <div class="card-text markdown-content" data-markdown="{{ event.description }}">
+                            {{ event.description }}
+                        </div>
+                        {% if user.is_authenticated %}
+                            <div class="card-actions mt-3 text-end">
+                                <a href="{% url 'portfolio:edit_life_event' event.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <form method="post" action="{% url 'portfolio:delete_life_event' event.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                            onclick="return confirm('Are you sure you want to delete this event?')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="text-center py-5">
+                    <p class="text-muted">No life events added yet.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if events.paginator.num_pages > 1 %}
+    <div class="pagination-container mt-4 mb-5">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if events.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}" aria-label="First">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ events.previous_page_number }}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}" aria-label="Previous">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% for num in events.paginator.page_range %}
+                    {% if events.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% elif num > events.number|add:'-3' and num < events.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if events.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ events.next_page_number }}" aria-label="Next">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ events.paginator.num_pages }}" aria-label="Last">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+{% if user.is_authenticated %}
+    {% for event in events %}
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal{{ event.id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Event</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete "<strong>{{ event.title }}</strong>"?</p>
+                    <p class="text-muted">This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form method="post" action="{% url 'portfolio:delete_life_event' event.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize marked
+        marked.setOptions({
+            breaks: true,
+            gfm: true
+        });
+
+        // Parse all markdown content
+        document.querySelectorAll('.markdown-content').forEach(function(element) {
+            const markdown = element.dataset.markdown;
+            element.innerHTML = marked.parse(markdown);
+        });
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't toggle if clicking edit/delete buttons
+                if (e.target.closest('.card-actions')) {
+                    return;
+                }
+                this.classList.toggle('expanded');
+            });
+        });
+    });
+</script>
+{% endblock %} 

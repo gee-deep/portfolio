@@ -1,0 +1,39 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/search.css' %}">
+{% block search_specific_css %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="text-center mb-4">Search {% block search_title %}{% endblock %}</h1>
+            <form id="searchForm" class="d-flex gap-3">
+                <input type="text" 
+                       id="searchQuery" 
+                       class="form-control" 
+                       placeholder="{% block search_placeholder %}{% endblock %}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="searchResults" class="search-results">
+        <!-- Results will be populated here -->
+    </div>
+</div>
+
+<template id="mediaCardTemplate">
+    {% block card_template %}{% endblock %}
+</template>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/search.js' %}"></script>
+{% block search_specific_js %}{% endblock %}
+{% endblock %} 

@@ -1,0 +1,135 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <h1 class="login-title">Sign In</h1>
+        
+        {% if messages %}
+        <div class="messages mb-4">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                <input type="text" 
+                       name="username" 
+                       class="form-control" 
+                       placeholder="Username"
+                       required 
+                       autofocus>
+            </div>
+            <div class="form-group mb-4">
+                <input type="password" 
+                       name="password" 
+                       class="form-control" 
+                       placeholder="Password"
+                       required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Sign In</button>
+        </form>
+    </div>
+</div>
+
+<style>
+.login-container {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.login-box {
+    background-color: var(--card-bg);
+    border-radius: 4px;
+    padding: 3rem;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+}
+
+.login-title {
+    color: var(--text-white);
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.login-form .form-control {
+    background-color: var(--netflix-dark-gray);
+    border: 1px solid var(--netflix-light-gray);
+    color: var(--text-white);
+    padding: 1rem;
+    font-size: 1rem;
+    height: auto;
+    transition: all 0.3s ease;
+}
+
+.login-form .form-control:focus {
+    background-color: var(--netflix-dark-gray);
+    border-color: var(--netflix-red);
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.25);
+    color: var(--text-white);
+}
+
+.login-form .form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.login-form .btn-primary {
+    background-color: var(--netflix-red);
+    border-color: var(--netflix-red);
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0.5px;
+}
+
+.login-form .btn-primary:hover {
+    background-color: #ff0a16;
+    border-color: #ff0a16;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
+}
+
+.alert {
+    background-color: var(--netflix-dark-gray);
+    border: none;
+    color: var(--text-white);
+}
+
+.alert-error {
+    border-left: 4px solid var(--netflix-red);
+}
+
+.alert-success {
+    border-left: 4px solid #2ecc71;
+}
+
+.btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+@media (max-width: 576px) {
+    .login-box {
+        padding: 2rem;
+    }
+    
+    .login-title {
+        font-size: 1.75rem;
+    }
+}
+</style>
+{% endblock %} 
